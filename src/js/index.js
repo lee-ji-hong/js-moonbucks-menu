@@ -4,8 +4,9 @@
 // - [x] 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
 // - [x]추가되는 메뉴의 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul> 안에 삽입해야 한다.`
 // - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
-// - [ ] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
-// - [ ] 사용자 입력값이 빈 값이라면 추가되지 않는다.
+// - [x] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
+// - [x] 사용자 입력값이 빈 값이라면 추가되지 않는다.
+// - [x] enter키가 아닌 다른 키에서 alert가 뜨지 않는다.
 
 //$표시는 html에서 dom element를 가져올 때 관용적으로 많이들 가져온다.
 //코드가 길어질때 줄어서 쓰기 편하다
@@ -34,10 +35,19 @@ function App() {
     e.preventDefault();
   });
   $("#espresso-menu-name").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      const espressoMenuName = $("#espresso-menu-name").value;
-      const menuItemTemplate = (espressoMenuName) => {
-        return `
+    if (e.key !== "Enter") {
+      return;
+    }
+    //입력값이 비어있을 경우
+    if ($("#espresso-menu-name").value === "") {
+      alert("값을 입력해주세요.");
+      return; //return을 해주면 다음 부분까지 실행되지 않고 종료된다.
+    }
+
+    //입력값이 있을 경우
+    const espressoMenuName = $("#espresso-menu-name").value;
+    const menuItemTemplate = (espressoMenuName) => {
+      return `
         <li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
         <button
@@ -53,24 +63,23 @@ function App() {
           삭제
         </button>
       </li>`;
-      };
-      // <!-- beforebegin -->
-      //<ul>
-      //<!-- afterbegin -->
-      //<li></li>
-      //<!-- beforeend -->
-      //</ul>
-      //<!-- afterend -->
-      // $("#espresso-menu-list").innerHTML = menuItemTemplate(espressoMenuName);
-      $("#espresso-menu-list").insertAdjacentHTML(
-        "beforeend",
-        menuItemTemplate(espressoMenuName)
-      );
-      // const 변수 = li 갯수를 카운팅해서 구해보기
-      const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-      $(".menu-count").innerText = `총 ${menuCount}개`;
-      $("#espresso-menu-name").value = "";
-    }
+    };
+    // <!-- beforebegin -->
+    //<ul>
+    //<!-- afterbegin -->
+    //<li></li>
+    //<!-- beforeend -->
+    //</ul>
+    //<!-- afterend -->
+    // $("#espresso-menu-list").innerHTML = menuItemTemplate(espressoMenuName);
+    $("#espresso-menu-list").insertAdjacentHTML(
+      "beforeend",
+      menuItemTemplate(espressoMenuName)
+    );
+    // const 변수 = li 갯수를 카운팅해서 구해보기
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $(".menu-count").innerText = `총 ${menuCount}개`;
+    $("#espresso-menu-name").value = "";
   });
 }
 
