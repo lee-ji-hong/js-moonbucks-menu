@@ -2,6 +2,7 @@
 
 //TODO 메뉴 추가
 // - [x] 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
+// - [x] 메뉴의 이름을 입력 받고 확인 버튼 클릭으로 추가한다.
 // - [x]추가되는 메뉴의 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul> 안에 삽입해야 한다.`
 // - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
 // - [x] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
@@ -29,57 +30,65 @@
 //이미 사용중인 element는 다시 파싱하지 않는다. 그러므로 element 안에 존재하는 element를 건드리지 않는다. innerHtml보다는 작업이 덜 들고 빠르다
 
 const $ = (selector) => document.querySelector(selector);
+const addMenuName = () => {
+  //입력값이 비어있을 경우
+  if ($("#espresso-menu-name").value === "") {
+    alert("값을 입력해주세요.");
+    return; //return을 해주면 다음 부분까지 실행되지 않고 종료된다.
+  }
+
+  //입력값이 있을 경우
+  const espressoMenuName = $("#espresso-menu-name").value;
+  const menuItemTemplate = (espressoMenuName) => {
+    return `
+      <li class="menu-list-item d-flex items-center py-2">
+      <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+      >
+        수정
+      </button>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+      >
+        삭제
+      </button>
+    </li>`;
+  };
+  // <!-- beforebegin -->
+  //<ul>
+  //<!-- afterbegin -->
+  //<li></li>
+  //<!-- beforeend -->
+  //</ul>
+  //<!-- afterend -->
+  // $("#espresso-menu-list").innerHTML = menuItemTemplate(espressoMenuName);
+  $("#espresso-menu-list").insertAdjacentHTML(
+    "beforeend",
+    menuItemTemplate(espressoMenuName)
+  );
+  // const 변수 = li 갯수를 카운팅해서 구해보기
+  const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+  $(".menu-count").innerText = `총 ${menuCount}개`;
+  $("#espresso-menu-name").value = "";
+};
 
 function App() {
   $("#espresso-menu-form").addEventListener("submit", (e) => {
     e.preventDefault();
   });
+
+  $("#espresso-menu-submit-button").addEventListener("click", () => {
+    addMenuName();
+  });
+
   $("#espresso-menu-name").addEventListener("keypress", (e) => {
     if (e.key !== "Enter") {
       return;
     }
-    //입력값이 비어있을 경우
-    if ($("#espresso-menu-name").value === "") {
-      alert("값을 입력해주세요.");
-      return; //return을 해주면 다음 부분까지 실행되지 않고 종료된다.
-    }
-
-    //입력값이 있을 경우
-    const espressoMenuName = $("#espresso-menu-name").value;
-    const menuItemTemplate = (espressoMenuName) => {
-      return `
-        <li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-        >
-          수정
-        </button>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-        >
-          삭제
-        </button>
-      </li>`;
-    };
-    // <!-- beforebegin -->
-    //<ul>
-    //<!-- afterbegin -->
-    //<li></li>
-    //<!-- beforeend -->
-    //</ul>
-    //<!-- afterend -->
-    // $("#espresso-menu-list").innerHTML = menuItemTemplate(espressoMenuName);
-    $("#espresso-menu-list").insertAdjacentHTML(
-      "beforeend",
-      menuItemTemplate(espressoMenuName)
-    );
-    // const 변수 = li 갯수를 카운팅해서 구해보기
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount}개`;
-    $("#espresso-menu-name").value = "";
+    addMenuName();
   });
 }
 
