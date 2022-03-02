@@ -78,7 +78,7 @@ const addMenuName = () => {
 function App() {
   //TODO 메뉴 수정
   // - [x] 메뉴의 수정 버튼클릭 이벤트를 받고, 메뉴수정하는 모달창(prompt)이 뜬다.
-  // - [ ] 모달창에서 신규메뉴명을 입력 받고, 확인버튼을 누르면 메뉴가 수정된다.
+  // - [x] 모달창에서 신규메뉴명을 입력 받고, 확인버튼을 누르면 메뉴가 수정된다.
 
   //이벤트 위임 : li태그들이 이벤트가 동작이 되어야하는데
   //해당 코드가 존재하지 않기 때문에 그 부모인 ul태그에 해당 이벤트를 위임한다.
@@ -87,10 +87,12 @@ function App() {
 
   $("#espresso-menu-list").addEventListener("click", (e) => {
     if (e.target.classList.contains("menu-edit-button")) {
-      const menuName = e.target
-        .closest("li")
-        .querySelector(".menu-name").innerText;
-      prompt("메뉴명을 수정하세요", menuName);
+      const $menuName = e.target.closest("li").querySelector(".menu-name");
+      const updatedMenuName = prompt(
+        "메뉴명을 수정하세요",
+        $menuName.innerText
+      );
+      $menuName.innerText = updatedMenuName;
     }
   });
   $("#espresso-menu-form").addEventListener("submit", (e) => {
