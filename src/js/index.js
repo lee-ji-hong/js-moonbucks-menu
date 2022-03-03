@@ -9,11 +9,11 @@
 // -> 페이지 최초로 접근 했을 때 localStorage에 저장된 데이터가 있다면 console에 나타나게끔 구현
 
 //TODO 카테고리별 메뉴판 관리
-//- [] 에스프레소 메뉴판 관리
-//- [] 프라푸치노 메뉴판 관리
-//- [] 블렌디드 메뉴판 관리
-//- [] 티바나 메뉴판 관리
-//- [] 디저트 메뉴판 관리
+//- [x] 에스프레소 메뉴판 관리
+//- [x] 프라푸치노 메뉴판 관리
+//- [x] 블렌디드 메뉴판 관리
+//- [x] 티바나 메뉴판 관리
+//- [x] 디저트 메뉴판 관리
 
 //TODO 페이지 접근시 최초 데이터 Read & Rendering
 //- [] 페이지에 최초로 접근할 때 localStorage에 에스프레소 메뉴를 읽어온다.
@@ -36,10 +36,19 @@ const store = {
 };
 
 function App() {
-  // 상태(가변하는 데이터) : 메뉴명
-  this.menu = [];
+  //카테고리별로 저장된 메뉴를 가져오기 위해서는 객체형태로 데이터들이 저장되어 있어야 하겠지?
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
+  };
+
+  this.currentCategory = "espresso";
+
   this.init = () => {
-    if (store.getLocalStorage().length > 1) {
+    if (store.getLocalStorage()) {
       this.menu = store.getLocalStorage();
     }
     render();
@@ -47,7 +56,7 @@ function App() {
 
   //데이터를 그려주는 logic을 재사용할 수 있게 분리함
   const render = () => {
-    const template = this.menu
+    const template = this.menu[this.currentCategory]
       .map((menuItem, index) => {
         return `
         <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
@@ -84,7 +93,7 @@ function App() {
 
     //입력값이 있을 경우
     const espressoMenuName = $("#espresso-menu-name").value;
-    this.menu.push({ name: espressoMenuName });
+    this.menu[this.currentCategory].push({ name: espressoMenuName });
     //상태가 변경되었을 때 바로 저장한다.
     store.setLocalStorage(this.menu);
     render();
@@ -129,6 +138,14 @@ function App() {
       return;
     }
     addMenuName();
+  });
+
+  $("nav").addEventListener("click", (e) => {
+    const isCategoryButton = e.target.classList.contains("cafe-category-name");
+    if (isCategoryButton) {
+      const categoryName = e.target.dataset.categoryName;
+      console.log(categoryName);
+    }
   });
 }
 
