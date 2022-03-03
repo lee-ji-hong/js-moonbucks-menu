@@ -5,7 +5,8 @@
 //- [x] 메뉴를 추가할 때
 //- [x] 메뉴를 수정할 때
 //- [x] 메뉴를 삭제할 때
-//- [] localStorage에 데이터를 읽어온다.
+//- [x] localStorage에 데이터를 console로 읽고 저장된 내역이 화면으로 나타난다.
+// -> 페이지 최초로 접근 했을 때 localStorage에 저장된 데이터가 있다면 console에 나타나게끔 구현
 
 //TODO 카테고리별 메뉴판 관리
 //- [] 에스프레소 메뉴판 관리
@@ -30,31 +31,22 @@ const store = {
     localStorage.setItem("menu", JSON.stringify(menu));
   },
   getLocalStorage() {
-    localStorage.getItem("menu");
+    return JSON.parse(localStorage.getItem("menu"));
   },
 };
 
 function App() {
   // 상태(가변하는 데이터) : 메뉴명
   this.menu = [];
-
-  const UpdateMenuCount = () => {
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount}개`;
+  this.init = () => {
+    if (store.getLocalStorage().length > 1) {
+      this.menu = store.getLocalStorage();
+    }
+    render();
   };
 
-  const addMenuName = () => {
-    //입력값이 비어있을 경우
-    if ($("#espresso-menu-name").value === "") {
-      alert("값을 입력해주세요.");
-      return; //return을 해주면 다음 부분까지 실행되지 않고 종료된다.
-    }
-
-    //입력값이 있을 경우
-    const espressoMenuName = $("#espresso-menu-name").value;
-    this.menu.push({ name: espressoMenuName });
-    //상태가 변경되었을 때 바로 저장한다.
-    store.setLocalStorage(this.menu);
+  //데이터를 그려주는 logic을 재사용할 수 있게 분리함
+  const render = () => {
     const template = this.menu
       .map((menuItem, index) => {
         return `
@@ -78,9 +70,26 @@ function App() {
 
     $("#espresso-menu-list").innerHTML = template;
     UpdateMenuCount();
+  };
+  const UpdateMenuCount = () => {
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $(".menu-count").innerText = `총 ${menuCount}개`;
+  };
+  const addMenuName = () => {
+    //입력값이 비어있을 경우
+    if ($("#espresso-menu-name").value === "") {
+      alert("값을 입력해주세요.");
+      return; //return을 해주면 다음 부분까지 실행되지 않고 종료된다.
+    }
+
+    //입력값이 있을 경우
+    const espressoMenuName = $("#espresso-menu-name").value;
+    this.menu.push({ name: espressoMenuName });
+    //상태가 변경되었을 때 바로 저장한다.
+    store.setLocalStorage(this.menu);
+    render();
     $("#espresso-menu-name").value = "";
   };
-
   const upateMenuName = (e) => {
     //메뉴를 수정할 때 데이터 저장
     const menuId = e.target.closest("li").dataset.menuId;
@@ -90,7 +99,6 @@ function App() {
     store.setLocalStorage(this.menu);
     $menuName.innerText = updatedMenuName;
   }; //이벤트 객체를 사용하기 때문에 이벤트를 파라미터로 넘겨줄 수 있다.
-
   const removeMenuName = (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
       const menuId = e.target.closest("li").dataset.menuId;
@@ -105,7 +113,6 @@ function App() {
     if (e.target.classList.contains("menu-edit-button")) {
       upateMenuName(e);
     }
-
     if (e.target.classList.contains("menu-remove-button")) {
       removeMenuName(e);
     }
@@ -126,6 +133,7 @@ function App() {
 }
 
 const app = new App();
+app.init();
 //위의 코드는 아래의 값과 동일한 동작이다.
 
 /*const app = {
