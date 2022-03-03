@@ -20,8 +20,9 @@
 //- [x] 에스프레소 메뉴가 페이지에 나타난다.
 
 //TODO 품절 상태관리
-//- [] 품절 버튼을 추가한다.
-//- [] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
+//- [x] 품절 버튼을 추가한다.
+//- [x] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
+//- [x] 품절된 상태의 상품 품절버튼을 클릭하면 다시 되돌아온다.
 //- [] 클릭이벤트에서 가장 가까운 li태그의 class속성 값에 sold-out을 추가한다.
 
 const $ = (selector) => document.querySelector(selector);
@@ -36,7 +37,6 @@ const store = {
 };
 
 function App() {
-  //카테고리별로 저장된 메뉴를 가져오기 위해서는 객체형태로 데이터들이 저장되어 있어야 하겠지?
   this.menu = {
     espresso: [],
     frappuccino: [],
@@ -59,8 +59,16 @@ function App() {
     const template = this.menu[this.currentCategory]
       .map((menuItem, index) => {
         return `
-        <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
+        <li data-menu-id="${index}" class= " menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name ${
+          menuItem.soldOut ? "sold-out" : ""
+        }">${menuItem.name}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+        >
+          품절
+        </button>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -107,7 +115,7 @@ function App() {
     this.menu[this.currentCategory][menuId].name = updatedMenuName;
     store.setLocalStorage(this.menu);
     $menuName.innerText = updatedMenuName;
-  }; //이벤트 객체를 사용하기 때문에 이벤트를 파라미터로 넘겨줄 수 있다.
+  };
   const removeMenuName = (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
       const menuId = e.target.closest("li").dataset.menuId;
@@ -117,13 +125,26 @@ function App() {
       UpdateMenuCount();
     }
   };
+  const soldOutMenu = (e) => {
+    const menuId = e.target.closest("li").dataset.menuId;
+    this.menu[this.currentCategory][menuId].soldOut =
+      !this.menu[this.currentCategory][menuId].soldOut;
+    store.setLocalStorage(this.menu);
+    render();
+  };
 
   $("#menu-list").addEventListener("click", (e) => {
     if (e.target.classList.contains("menu-edit-button")) {
       upateMenuName(e);
+      return; //해당 코드를 실행한 후 뒤의 코드를 실행할 필요가 없기 때문에 return하는 습관을 들이는 것이 버그를 줄이는데에 좋다.
     }
     if (e.target.classList.contains("menu-remove-button")) {
       removeMenuName(e);
+      return;
+    }
+    if (e.target.classList.contains("menu-sold-out-button")) {
+      soldOutMenu(e);
+      return;
     }
   });
 
@@ -144,8 +165,6 @@ function App() {
     const isCategoryButton = e.target.classList.contains("cafe-category-name");
     if (isCategoryButton) {
       const categoryName = e.target.dataset.categoryName;
-      //카테고리 버튼을 클릭하면 상태값을 변경한다.
-      //1.페이지 카테고리명 변경
       this.currentCategory = categoryName;
       $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
       render();
@@ -155,9 +174,3 @@ function App() {
 
 const app = new App();
 app.init();
-//위의 코드는 아래의 값과 동일한 동작이다.
-
-/*const app = {
-  name: "",
-};
-*/
