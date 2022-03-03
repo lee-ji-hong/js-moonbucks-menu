@@ -1,53 +1,43 @@
-//step1 요구사항 구현을 위한 전략
+//step2요구사항 - 상태 관리로 메뉴 관리하기
 
-//TODO 메뉴 추가
-// - [x] 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
-// - [x] 메뉴의 이름을 입력 받고 확인 버튼 클릭으로 추가한다.
-// - [x]추가되는 메뉴의 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul> 안에 삽입해야 한다.`
-// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
-// - [x] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
-// - [x] 사용자 입력값이 빈 값이라면 추가되지 않는다.
-// - [x] enter키가 아닌 다른 키에서 alert가 뜨지 않는다.
+//TODO localStorage Read & Write
+//- [x] localStorage에 데이터를 저장한다.
+//- [x] 메뉴를 추가할 때
+//- [x] 메뉴를 수정할 때
+//- [] 메뉴를 삭제할 때
+//- [] localStorage에 데이터를 읽어온다.
 
-//$표시는 html에서 dom element를 가져올 때 관용적으로 많이들 가져온다.
-//코드가 길어질때 줄어서 쓰기 편하다
+//TODO 카테고리별 메뉴판 관리
+//- [] 에스프레소 메뉴판 관리
+//- [] 프라푸치노 메뉴판 관리
+//- [] 블렌디드 메뉴판 관리
+//- [] 티바나 메뉴판 관리
+//- [] 디저트 메뉴판 관리
 
-//form태그가 enter를 쳤을 때 자동으로 전송되는 것을 막아준다.
-//querySelector: 찾기
-//addEventListener: 지정한 유형의 이벤트를 대상이 수신할 때마다 호출할 함수를 설정한다.
-// * form이 전송되는 이벤트는 submit이벤트라고 한다.
-//preventDefault: 엔터키를 눌렀을 때 막아주는 기능을 한다.
+//TODO 페이지 접근시 최초 데이터 Read & Rendering
+//- [] 페이지에 최초로 접근할 때 localStorage에 에스프레소 메뉴를 읽어온다.
+//- [] 에스프레소 메뉴가 페이지에 나타난다.
 
-//메뉴의 이름을 입력받는 것
-//querySelector로 input의 id값을 찾아서
-//keypress라는 함수를 통해 이벤트를 했을때, 이때 사용자가 어떤 값을 입력했는지 찾아야한다.
-//그것을 이벤트를 함수에서 받아올 수 가 있다.
-//if문을 통해 사용자가 엔터키를 누르면 event.key를 통해서 사용자가 입력한 이벤트 값을 받아올 수 있다는 조건으로 알아낸다
-
-//dom : 자바스크립트를 이용해 html에서 데이터를 가져오고 싶을 때
-//innerHTML : 코드에 html를 추가하고 싶을 때 쓰는 거
-//element.insertAdjacentHTML(position,text) : 해당 메서드는  HTML이나 XML같은 특정 텍스트를 파싱하고, 특정 위치에 DOM tree안에 원하는 node들을 추가한다.
-//이미 사용중인 element는 다시 파싱하지 않는다. 그러므로 element 안에 존재하는 element를 건드리지 않는다. innerHtml보다는 작업이 덜 들고 빠르다
-
-//TODO 메뉴 수정
-// - [x] 메뉴의 수정 버튼클릭 이벤트를 받고, 메뉴수정하는 모달창(prompt)이 뜬다.
-// - [x] 모달창에서 신규메뉴명을 입력 받고, 확인버튼을 누르면 메뉴가 수정된다.
-
-//TODO 메뉴 삭제
-// - [x] 메뉴 삭제 버튼 클릭 이벤트를 받고, 메뉴 삭제 컨펌(confirm) 모달창이 뜬다.
-// - [x] 확인 버튼을 클릭하면 메뉴가 삭제된다.
-// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
-
-//이벤트 위임 : li태그들이 이벤트가 동작이 되어야하는데
-//해당 코드가 존재하지 않기 때문에 그 부모인 ul태그에 해당 이벤트를 위임한다.
-//prompt("사용자에게 전달할 메세지 작성 가능","기본 값")
-//Element.closest() : 부모 요소 단위로 출발하여 각 요소가 지정한 선택자에 가장 가깝게 조건에 만족한 부모요소가 반환되며, 조건에 만족한 요소가 없으면 null 값을 반환한다.
-//Element.remove() : 삭제기능을 하는 method
+//TODO 품절 상태관리
+//- [] 품절 버튼을 추가한다.
+//- [] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
+//- [] 클릭이벤트에서 가장 가까운 li태그의 class속성 값에 sold-out을 추가한다.
 
 const $ = (selector) => document.querySelector(selector);
 
+const store = {
+  setLocalStorage(menu) {
+    localStorage.setItem("menu", JSON.stringify(menu));
+  },
+  getLocalStorage() {
+    localStorage.getItem("menu");
+  },
+};
+
 function App() {
-  // const 변수 = li 갯수를 카운팅해서 구해보기
+  // 상태(가변하는 데이터) : 메뉴명
+  this.menu = [];
+
   const UpdateMenuCount = () => {
     const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
     $(".menu-count").innerText = `총 ${menuCount}개`;
@@ -62,10 +52,14 @@ function App() {
 
     //입력값이 있을 경우
     const espressoMenuName = $("#espresso-menu-name").value;
-    const menuItemTemplate = (espressoMenuName) => {
-      return `
-        <li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
+    this.menu.push({ name: espressoMenuName });
+    //상태가 변경되었을 때 바로 저장한다.
+    store.setLocalStorage(this.menu);
+    const template = this.menu
+      .map((menuItem, index) => {
+        return `
+        <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -79,27 +73,21 @@ function App() {
           삭제
         </button>
       </li>`;
-    };
-    // <!-- beforebegin -->
-    //<ul>
-    //<!-- afterbegin -->
-    //<li></li>
-    //<!-- beforeend -->
-    //</ul>
-    //<!-- afterend -->
-    // $("#espresso-menu-list").innerHTML = menuItemTemplate(espressoMenuName);
-    $("#espresso-menu-list").insertAdjacentHTML(
-      "beforeend",
-      menuItemTemplate(espressoMenuName)
-    );
-    // 메뉴count기능
+      })
+      .join("");
+
+    $("#espresso-menu-list").innerHTML = template;
     UpdateMenuCount();
     $("#espresso-menu-name").value = "";
   };
 
   const upateMenuName = (e) => {
+    //메뉴를 수정할 때 데이터 저장
+    const menuId = e.target.closest("li").dataset.menuId;
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     const updatedMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+    this.menu[menuId].name = updatedMenuName;
+    store.setLocalStorage(this.menu);
     $menuName.innerText = updatedMenuName;
   }; //이벤트 객체를 사용하기 때문에 이벤트를 파라미터로 넘겨줄 수 있다.
 
@@ -134,4 +122,10 @@ function App() {
   });
 }
 
-App();
+const app = new App();
+//위의 코드는 아래의 값과 동일한 동작이다.
+
+/*const app = {
+  name: "",
+};
+*/
