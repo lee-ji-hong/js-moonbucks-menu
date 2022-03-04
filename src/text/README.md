@@ -50,6 +50,31 @@ Element.remove() : 삭제기능을 하는 method
 
 > step2요구사항 - 상태 관리로 메뉴 관리하기
 
+//TODO localStorage Read & Write
+//- [x] localStorage에 데이터를 저장한다.
+//- [x] 메뉴를 추가할 때
+//- [x] 메뉴를 수정할 때
+//- [x] 메뉴를 삭제할 때
+//- [x] localStorage에 데이터를 console로 읽고 저장된 내역이 화면으로 나타난다.
+// -> 페이지 최초로 접근 했을 때 localStorage에 저장된 데이터가 있다면 console에 나타나게끔 구현
+
+//TODO 카테고리별 메뉴판 관리
+//- [x] 에스프레소 메뉴판 관리
+//- [x] 프라푸치노 메뉴판 관리
+//- [x] 블렌디드 메뉴판 관리
+//- [x] 티바나 메뉴판 관리
+//- [x] 디저트 메뉴판 관리
+
+//TODO 페이지 접근시 최초 데이터 Read & Rendering
+//- [x] 페이지에 최초로 접근할 때 localStorage에 에스프레소 메뉴를 읽어온다.
+//- [x] 에스프레소 메뉴가 페이지에 나타난다.
+
+//TODO 품절 상태관리
+//- [x] 품절 버튼을 추가한다.
+//- [x] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
+//- [x] 품절된 상태의 상품 품절버튼을 클릭하면 다시 되돌아온다.
+//- [x] 클릭이벤트에서 가장 가까운 li태그의 class속성 값에 sold-out을 추가한다.
+
 - localStorage : url별로 사용할 수 있는브라우저에 저장할 수 있는 저장소.
   저장방법 : localStorage.setItem("menu","espresso") 형태로 key 와value의 형태로 사용가능하다.
   사용방법 : localStorage.getItem("menu")형태로 key값만 적어주면 저장된 데이터를 가져올 수 있다.
@@ -63,3 +88,7 @@ Element.remove() : 삭제기능을 하는 method
   -const menuId = e.target.closest("li").dataset.menuId; => 데이터 속성을 가져올 때 dataset을 이용해서 가져온다.
   -this.menu = []; 같은 초기화를 하는 이유 : 상태가 어떤 데이터형태로 들어오는지 알 수 있기 위해서 -카테고리별로 저장된 메뉴를 가져오기 위해서는 객체형태로 데이터들이 저장되어 있어야 하겠지? -이벤트 객체를 사용하기 때문에 이벤트를 파라미터로 넘겨줄 수 있다.
   -hong =!hong 이런식으로 하면 버튼을 클릭했을 때 true,false 반복 가능하다.
+
+> step3 요구사항 - 서버와의 통신을 통해 메뉴 관리하기
+
+-fetch('url', option) 메소드 -제일 처음 url인자가 들어가서 요청을 보내면 그 요청을 서버에서 처리하는 역할을 하게 함. -두번째 인자로 option을 받는데 서버에 데이터를 받는건지,생성,수정,삭제를 요청하는건지 구체적인 약속에 대한 내용이 들어간다.
