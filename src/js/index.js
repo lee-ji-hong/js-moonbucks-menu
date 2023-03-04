@@ -18,7 +18,6 @@ function App() {
     render();
     initEventListeners();
   };
-
   //데이터를 그려주는 logic을 재사용할 수 있게 분리함
   const render = () => {
     const template = this.menu[this.currentCategory]
@@ -65,7 +64,7 @@ function App() {
       alert("값을 입력해주세요.");
       return; //return을 해주면 다음 부분까지 실행되지 않고 종료된다.
     }
-
+// test
     //입력값이 있을 경우
     const MenuName = $("#menu-name").value;
     this.menu[this.currentCategory].push({ name: MenuName });
